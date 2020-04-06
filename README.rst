@@ -1,5 +1,5 @@
 =======================
-cookiecutter-lux-python
+cookiecutter-python
 =======================
 
 Cookiecutter_ template for a Python package.
