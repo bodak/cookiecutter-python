@@ -1,5 +1,12 @@
-SHELL = /bin/bash
+SHELL = /bin/zsh
+DOCKER_SHELL = /bin/bash
 
+
+#todo: add git init
+#todo: initial git commit
+#todo: add auto-changelog
+#todo: add black formatting
+#todo: add tests inside docker
 
 ##
 # Definitions
@@ -72,7 +79,8 @@ ifeq ($(VIRTUALENV_BIN),)
 	tools += $(VIRTUALENV)
 endif
 
-VENV_DIR = .venv
+# use direnv structure: layout pyenv [version]
+VENV_DIR = .direnv/python-${PYTHON3_VER}
 
 PYTHON_STD_PKGS = \
 	pip \
@@ -148,7 +156,7 @@ requirements:
 	@$(DOCKER) run -it --rm \
 		-v "$(CURDIR)/requirements.in:/requirements.in" \
 		-v "$(CURDIR)/requirements.txt:/requirements.txt" \
-	"$(DOCKER_BASE_IMAGE)" "$(SHELL)" -c \
+	"$(DOCKER_BASE_IMAGE)" "$(DOCKER_SHELL)" -c \
 		'pip install -U pip pip-tools && \
 		CUSTOM_COMPILE_COMMAND="make requirements" \
 			pip-compile -o requirements.tmp requirements.in && \
@@ -156,7 +164,7 @@ requirements:
 
 $(VENV_DIR): requirements.txt requirements-test.txt
 	@echo
-	@$(VIRTUALENV) "$(VENV_DIR)";
+	@$(VIRTUALENV) -p $(PYTHON3_VER) "$(VENV_DIR)";
 	@if [[ -d "$(VENV_DIR)" ]]; then \
 		\
 		source "$(VENV_DIR)/bin/activate"; \
@@ -172,7 +180,6 @@ $(VENV_DIR): requirements.txt requirements-test.txt
 		deactivate; \
 	fi
 
-.PHONY: venv
 # target: venv - Create the virtual environment
 venv: $(VENV_DIR)
 
@@ -204,6 +211,13 @@ uninstall:
 	@echo
 	@$(PYTHON) setup.py develop --uninstall
 
+
+##
+# Running
+
+run:
+	@echo
+	@$(PYTHON) $(PACKAGE_NAME)/__main__.py
 
 ##
 # Testing
