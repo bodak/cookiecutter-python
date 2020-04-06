@@ -1,5 +1,3 @@
-{{ cookiecutter.shebang_python }}
-
 import pytest
 
 
