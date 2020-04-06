@@ -1,5 +1,3 @@
-{{ cookiecutter.shebang_python }}
-
 import string
 import sys
 import types
@@ -63,7 +61,7 @@ setup_params = dict(
 
     entry_points={
         'console_scripts': [
-            '{{ cookiecutter.repo_name }} = {{ cookiecutter.repo_name }}.{{ cookiecutter.repo_name }}:main',
+            '{{ cookiecutter.repo_name }} = {{ cookiecutter.repo_name }}.__main__:main',
         ]
     },
 

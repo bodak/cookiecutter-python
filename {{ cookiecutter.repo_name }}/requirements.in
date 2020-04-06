@@ -1,3 +1,2 @@
 {%- if cookiecutter.enable_sphinx == 'true' %}sphinx
 {% endif -%}
-toml

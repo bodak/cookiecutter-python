@@ -1,4 +1,5 @@
+auto-changelog
+black
 ipdb
 mypy
-pylint
 pytest-sugar
