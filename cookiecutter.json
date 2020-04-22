@@ -1,16 +1,16 @@
 {
-    "name": "Foo-pkg",
+    "name": "python-project",
     "repo_name": "{{ cookiecutter.name | lower | replace('-', '_') }}",
     "class_name": "{{ cookiecutter.name | title | replace('-', '') }}",
     "version": "0.1.0",
-    "brief": "Just Foo package",
+    "brief": "Python project",
     "description": "The boilerplate Python project that aims to create facility for maintaining of the package\neasily. It considering tools for building, testing and distribution.",
-    "author_name": "Waldo Garply",
-    "author_email": "waldo@example.com",
-    "url": "https://waldo.example.com",
+    "author_name": "John Doe",
+    "author_email": "john@doe.org",
+    "url": "https://john.doe.org",
     "license": "BSD3",
     "year": "2020",
-    "python_version": "3.8.1",
+    "python_version": "3.8.2",
     "python": "python{{ cookiecutter.python_version[0] }}",
     "enable_sphinx": "false"
 }
