@@ -2,19 +2,12 @@ SHELL = /bin/zsh
 DOCKER_SHELL = /bin/bash
 
 
-#todo: add git init
-#todo: initial git commit
-#todo: add auto-changelog
-#todo: add black formatting
-#todo: add tests inside docker
-
 ##
 # Definitions
 
 ### Error codes
 
 ERROR_PYTHON_VERSION = 10
-ERROR_PYTHON_TESTTOOL = 20
 
 
 ### Main defs
@@ -87,8 +80,6 @@ PYTHON_STD_PKGS = \
 	setuptools \
 	wheel
 
-TESTTOOL = pytest
-
 
 ### Docker
 
@@ -99,7 +90,7 @@ endif
 
 DOCKER_PS_ARGS = -s
 
-DOCKER_BASE_IMAGE = python:$(PYTHON3_VER)-slim-buster
+DOCKER_BASE_IMAGE = python:$(PYTHON3_VER)-alpine
 DOCKER_PORT = 8088
 
 {%- if cookiecutter.enable_sphinx == 'true' %}
@@ -147,24 +138,42 @@ endif
 
 
 ##
-# Virtual environment
+.PHONY: init
+init:
+	git init
+	git add -f *
+	git add .gitignore
+	git add .flake8
+	git commit -m "build: cookiecutter-python"
+
+##
+# Dev environmentt
 
 .PHONY: requirements
 # target: requirements - Compile Pip requirements
 requirements:
 	@echo
-	@$(DOCKER) run -it --rm \
-		-v "$(CURDIR)/requirements.in:/requirements.in" \
-		-v "$(CURDIR)/requirements.txt:/requirements.txt" \
-	"$(DOCKER_BASE_IMAGE)" "$(DOCKER_SHELL)" -c \
-		'pip install -U pip pip-tools && \
-		CUSTOM_COMPILE_COMMAND="make requirements" \
-			pip-compile -o requirements.tmp requirements.in && \
-		cat requirements.tmp > requirements.txt'
+	@if (! docker stats --no-stream > /dev/null); then \
+		pip install nox; \
+		nox -rs requirements; \
+	else \
+		$(DOCKER) run -it --rm \
+			-v "$(CURDIR)/requirements.in:/requirements.in" \
+			-v "$(CURDIR)/requirements.txt:/requirements.txt" \
+		"$(DOCKER_BASE_IMAGE)" "$(DOCKER_SHELL)" -c \
+			'pip install -U pip pip-tools && \
+			CUSTOM_COMPILE_COMMAND="make requirements" \
+				pip-compile -o requirements.tmp requirements.in && \
+			cat requirements.tmp > requirements.txt'; \
+	fi
 
-$(VENV_DIR): requirements.txt requirements-test.txt
+.PHONY: install
+# target: install - Install project sources in "development mode"
+install: requirements.txt requirements-test.txt
 	@echo
-	@$(VIRTUALENV) -p $(PYTHON3_VER) "$(VENV_DIR)";
+	@if ! [[ -d "$(VENV_DIR)" ]]; then \
+		$(VIRTUALENV) -p $(PYTHON3_VER) "$(VENV_DIR)"; \
+	fi
 	@if [[ -d "$(VENV_DIR)" ]]; then \
 		\
 		source "$(VENV_DIR)/bin/activate"; \
@@ -179,29 +188,6 @@ $(VENV_DIR): requirements.txt requirements-test.txt
 		\
 		deactivate; \
 	fi
-
-# target: venv - Create the virtual environment
-venv: $(VENV_DIR)
-
-
-##
-# Building and packaging
-
-.PHONY: sdist
-# target: sdist - Create a source distribution
-sdist:
-	@echo
-	@[[ ! -f "$(distdir)"/*.tar.gz ]] && $(PYTHON) setup.py sdist
-
-.PHONY: dist
-# target: dist - Create a binary (wheel) distribution
-dist:
-	@echo
-	@[[ ! -f "$(distdir)"/*.whl ]] && $(PYTHON) setup.py bdist_wheel
-
-.PHONY: install
-# target: install - Install project sources in "development mode"
-install:
 	@echo
 	@$(PYTHON) setup.py develop
 
@@ -220,38 +206,55 @@ run:
 	@$(PYTHON) $(PACKAGE_NAME)/__main__.py
 
 ##
+# Linting
+
+black:
+	@echo
+	@nox -rs black
+
+lint:
+	@echo
+	@nox -rs lint
+
+safety:
+	@echo
+	@nox -rs safety
+
+type:
+	@echo
+	@nox -rs types
+
+##
 # Testing
 
 .PHONY: check
 # target: check - Run tests
-check:
+tests:
 	@echo
-	@if [[ -n "$(shell which ${TESTTOOL})" ]]; then \
-		$(TESTTOOL) "$(srcdir)"; \
-	else \
-		echo -n "ERROR: \`$(TESTTOOL)\` binary is missing"; \
-		exit $(ERROR_PYTHON_TESTTOOL); \
-	fi
+	@nox -rs tests
 
+##
+# Building and packaging
+.PHONY: changelog
+changelog:
+	@echo
+	@nox -rs changelog	
+
+
+.PHONY: sdist
+# target: sdist - Create a source distribution
+sdist:
+	@echo
+	@[[ ! -f "$(distdir)"/*.tar.gz ]] && $(PYTHON) setup.py sdist
+
+.PHONY: dist
+# target: dist - Create a binary (wheel) distribution
+dist:
+	@echo
+	@[[ ! -f "$(distdir)"/*.whl ]] && $(PYTHON) setup.py bdist_wheel
 
 ##
 # Docker
-
-.PHONY: docker-info
-# target: docker-info - Display system-wide information
-docker-info:
-	@echo
-	@$(DOCKER) info
-
-.PHONY: docker-stats
-# target: docker-stats - Show all images, containers and volumes
-docker-stats:
-	@echo
-	@$(DOCKER) images -a
-	@echo
-	@$(DOCKER) ps -a $(DOCKER_PS_ARGS)
-	@echo
-	@$(DOCKER) volume ls
 
 .PHONY: docker-build
 # target: docker-build - Build image from scratch
