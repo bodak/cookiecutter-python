@@ -2,6 +2,8 @@
 cookiecutter-python
 =======================
 
+``cookiecutter https://github.com/bodak/cookiecutter-python``
+
 Use
     - ``make init`` to init repo and commit blank state
     - ``make requirements`` to update requirements (uses nox if no docker found)
