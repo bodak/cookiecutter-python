@@ -16,6 +16,7 @@ Use
     - ``make tests`` tests inside nox environment
     - ``make docker-build`` builds docker image containing project
     - ``make docker-run`` runs docker image containing project
+    - ``make changelog`` updates CHANGELOG.md using commit message in https://www.conventionalcommits.org/en/v1.0.0/ format
     
 
 parts based on
