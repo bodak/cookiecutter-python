@@ -2,7 +2,6 @@ import pytest
 
 
 class Test{{ cookiecutter.class_name }}:
-
     def _setup(self) -> None:
         pass
 
@@ -15,5 +14,5 @@ class Test{{ cookiecutter.class_name }}:
         self._teardown()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pytest.main(args=[__file__])
