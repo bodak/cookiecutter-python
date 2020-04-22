@@ -1,5 +1,4 @@
-auto-changelog
 black
-ipdb
-mypy
-pytest-sugar
+flake8
+nox
+pytest
