@@ -90,7 +90,7 @@ endif
 
 DOCKER_PS_ARGS = -s
 
-DOCKER_BASE_IMAGE = python:$(PYTHON3_VER)-alpine
+DOCKER_BASE_IMAGE = python:$(PYTHON3_VER)-slim-buster
 DOCKER_PORT = 8088
 
 {%- if cookiecutter.enable_sphinx == 'true' %}
