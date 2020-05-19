@@ -1,6 +1,4 @@
-import string
-import sys
-import types
+import re
 
 from pathlib import Path
 from textwrap import dedent
@@ -17,20 +15,9 @@ import {{ cookiecutter.repo_name }} as root
 def read_requirements(file: str) -> List[str]:
     if not Path(file).is_file():
         raise FileNotFoundError(file)
-
-    alphabet = f'{string.digits}{string.ascii_lowercase}_-'
-
     with open(file) as fd:
-        return list(
-                    filter(
-                           lambda x: (
-                                      (x[0] in string.ascii_lowercase if x else False) and
-                                      all(c in alphabet for c in x)
-                                      ),
-                           map(lambda s: s.strip().lower(), fd)
-                           )
-                    )
-
+        unparsed_requirements = fd.read()
+        return re.findall(r"[\w-]+==[\d.]+", unparsed_requirements)
 
 setup_params = dict(
     name='{{ cookiecutter.name | lower | replace('_', '-') }}',
