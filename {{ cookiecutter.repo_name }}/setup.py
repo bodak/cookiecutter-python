@@ -21,37 +21,26 @@ def read_requirements(file: str) -> List[str]:
 
 setup_params = dict(
     name='{{ cookiecutter.name | lower | replace('_', '-') }}',
-
     version=root.__version__,
-
     description='{{ cookiecutter.brief }}',
-
     long_description=dedent("""
         {{ cookiecutter.description | replace('\n', '\n        ') }}
         """).strip(),
-
+    long_description_content_type='text/markdown',
     author='{{ cookiecutter.author_name }}',
     author_email='{{ cookiecutter.author_email }}',
     url='{{ cookiecutter.url }}',
-
-    classifiers=dedent("""
-        Natural Language :: English
-        Operating System :: POSIX :: Linux
-        Programming Language :: Python :: {{ cookiecutter.python_version }}
-        """),
+    classifiers=["Programming Language :: Python :: 3"],
     license='{{ cookiecutter.license }}',
     keywords=[],
-
     packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
-
     entry_points={
         'console_scripts': [
             '{{ cookiecutter.repo_name }} = {{ cookiecutter.repo_name }}.__main__:main',
         ]
     },
-
     install_requires=read_requirements('requirements.txt'),
     extras_require={},
     setup_requires=[
