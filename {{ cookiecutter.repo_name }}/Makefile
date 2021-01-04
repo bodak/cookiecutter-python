@@ -2,8 +2,9 @@ SHELL = /bin/zsh
 DOCKER_SHELL = /bin/bash
 
 
-##
-# Definitions
+#############################################
+### Makefile Definitions
+#############################################
 
 ### Error codes
 
@@ -120,8 +121,9 @@ endif
 {%- endif %}
 
 
-##
-# All
+#############################################
+### All
+#############################################
 
 all: help
 ifdef tools
@@ -137,7 +139,10 @@ endif
 	fi
 
 
-##
+#############################################
+### Initializing repo
+#############################################
+
 .PHONY: init
 init:
 	git init
@@ -146,8 +151,9 @@ init:
 	git add .flake8
 	git commit -m "build: cookiecutter-python"
 
-##
-# Dev environmentt
+#############################################
+### Updating requirements
+#############################################
 
 .PHONY: requirements
 # target: requirements - Compile Pip requirements
@@ -166,6 +172,10 @@ requirements:
 				pip-compile -o requirements.tmp requirements.in && \
 			cat requirements.tmp > requirements.txt'; \
 	fi
+
+#############################################
+### Installing requirements and package
+#############################################
 
 .PHONY: install
 # target: install - Install project sources in "development mode"
@@ -198,15 +208,17 @@ uninstall:
 	@$(PYTHON) setup.py develop --uninstall
 
 
-##
-# Running
+#############################################
+### Running
+#############################################
 
 run:
 	@echo
 	@$(PYTHON) $(PACKAGE_NAME)/__main__.py
 
-##
+#############################################
 # Linting
+#############################################
 
 black:
 	@echo
@@ -224,8 +236,10 @@ type:
 	@echo
 	@nox -rs types
 
-##
-# Testing
+#############################################
+### Testing
+#############################################
+
 
 .PHONY: check
 # target: check - Run tests
@@ -238,8 +252,11 @@ tests:
 .PHONY: changelog
 changelog:
 	@echo
-	@nox -rs changelog	
+	@nox -rs changelog
 
+#############################################
+### Publishing
+#############################################
 
 .PHONY: sdist
 # target: sdist - Create a source distribution
@@ -253,8 +270,9 @@ dist:
 	@echo
 	@[[ ! -f "$(distdir)"/*.whl ]] && $(PYTHON) setup.py bdist_wheel
 
-##
-# Docker
+#############################################
+### Docker
+#############################################
 
 .PHONY: docker-build
 # target: docker-build - Build image from scratch
@@ -280,8 +298,9 @@ docker-clean:
 {%- if cookiecutter.enable_sphinx == 'true' %}
 
 
-##
-# Documentation
+#############################################
+### Documentation
+#############################################
 
 .PHONY: doc
 doc:
@@ -304,8 +323,9 @@ html: doc
 {%- endif %}
 
 
-##
-# Auxiliary targets
+#############################################
+### Auxiliary targets
+#############################################
 
 .PHONY: help
 # target: help - Display all callable targets
@@ -314,8 +334,9 @@ help:
 	@$(GREPTOOL) "^\s*#\s*target\s*:\s*" [Mm]akefile \
 	| $(SED) -r "s/^\s*#\s*target\s*:\s*//g"
 
-
+#############################################
 ### Cleaners
+#############################################
 
 .PHONY: clean
 # target: clean - Clean the project's directory
