@@ -270,6 +270,18 @@ dist:
 	@echo
 	@[[ ! -f "$(distdir)"/*.whl ]] && $(PYTHON) setup.py bdist_wheel
 
+# publish to testpypi
+.PHONY: publish
+publish:
+	@echo
+	@nox -rs publish
+
+# publish to pypi
+.PHONY: publish-confirm
+publish-confirm:
+	@echo
+	@nox -rs publish -- -r pypi
+
 #############################################
 ### Docker
 #############################################

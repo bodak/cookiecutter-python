@@ -58,3 +58,14 @@ def changelog(session: Session) -> None:
     args = session.posargs or ["--unreleased"]
     session.install("auto-changelog")
     session.run("auto-changelog", *args)
+
+
+@nox.session(python=["{{ cookiecutter.python_version }}"])
+def publish(session: Session) -> None:
+    args = session.posargs or ["-r","testpypi"]
+    args += ["dist/*"]
+    session.install("twine", "wheel", "setuptools")
+    session.run("rm", "-rf", "dist", "build", external=True)
+    session.run("python", "setup.py", "--quiet", "sdist", "bdist_wheel")
+    session.run("twine", "check", "--strict", "dist/*")
+    session.run("twine","upload", *args)
