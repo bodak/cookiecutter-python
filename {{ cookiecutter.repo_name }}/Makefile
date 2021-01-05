@@ -241,7 +241,7 @@ type:
 #############################################
 
 
-.PHONY: check
+.PHONY: tests
 # target: check - Run tests
 tests:
 	@echo
