@@ -48,8 +48,8 @@ def safety(session: Session) -> None:
 @nox.session(python=["{{ cookiecutter.python_version }}"])
 def tests(session: Session) -> None:
     args = session.posargs or ["{{ cookiecutter.repo_name }}", "--cov"]
-    session.install("pytest", "pytest-cov")
-    session.run("pip", "install", "-r", "requirements.txt")
+    session.install("-r", "requirements-test.txt")
+    session.install("-r", "requirements.txt")
     session.run("pytest", *args)
 
 

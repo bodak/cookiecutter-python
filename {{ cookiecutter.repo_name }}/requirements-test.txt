@@ -1,3 +1,4 @@
 black
 nox
 pytest
+pytest-cov
