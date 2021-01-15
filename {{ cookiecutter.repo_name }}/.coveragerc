@@ -1,0 +1,12 @@
+[report]
+exclude_lines =
+    raise NotImplementedError
+    pragma: no cover
+[run]
+omit =
+    .venv/*
+    .nox/*
+    .direnv/*
+    {{ cookiecutter.repo_name }}/tests/*
+    setup.py
+    nox.py

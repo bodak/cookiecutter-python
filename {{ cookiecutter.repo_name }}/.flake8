@@ -7,3 +7,4 @@ application-import-names = {{ cookiecutter.repo_name }},tests
 import-order-style = google
 docstring-convention = google
 per-file-ignores = {{ cookiecutter.repo_name }}/tests/*:S101
+exclude = .venv,.git,.nox,__pycache__,.eggs
