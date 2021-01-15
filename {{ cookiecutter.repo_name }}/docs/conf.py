@@ -1,5 +1,6 @@
 # {{ cookiecutter.name }} documentation build configuration file.
 import {{ cookiecutter.repo_name }} as root
+import sphinx_rtd_theme  # noqa
 
 
 # -- General configuration ------------------------------------------------
@@ -9,6 +10,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.todo",
     "sphinx.ext.viewcode",
+    "sphinx_rtd_theme",
 ]
 
 templates_path = ["_templates"]
@@ -33,12 +35,7 @@ todo_include_todos = True
 
 # -- Options for HTML output ----------------------------------------------
 
-html_theme = "alabaster"
-
-html_theme_options = {
-    # Alabaster theme configuration.
-    "page_width": "75%",
-}
+html_theme = "sphinx_rtd_theme"
 
 html_static_path = ["_static"]
 html_show_copyright = True

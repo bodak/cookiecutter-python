@@ -2,7 +2,7 @@ import nox
 from nox.sessions import Session
 
 nox.options.sessions = "lint", "mypy", "tests"
-locations = "{{ cookiecutter.repo_name }}", "noxfile.py", "doc/conf.py"
+locations = "{{ cookiecutter.repo_name }}", "noxfile.py", "docs/conf.py"
 
 
 @nox.session(python=["{{ cookiecutter.python_version }}"])
@@ -58,6 +58,15 @@ def changelog(session: Session) -> None:
     args = session.posargs or ["--unreleased"]
     session.install("auto-changelog")
     session.run("auto-changelog", *args)
+
+
+@nox.session(python=["{{ cookiecutter.python_version }}"])
+def docs(session: Session) -> None:
+    args = session.posargs or locations
+    session.install("sphinx", "sphinx-rtd-theme")
+    session.install("sphinx-autobuild")
+    session.install(".")
+    session.run(*args)
 
 
 @nox.session(python=["{{ cookiecutter.python_version }}"])

@@ -6,7 +6,7 @@ include requirements-test.txt
 include requirements.txt
 include setup.cfg
 
-recursive-include doc *.py *.rst
+recursive-include docs *.py *.rst
 
 prune .venv
 global-exclude __pycache__ *.py[cod]
